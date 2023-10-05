@@ -9,21 +9,11 @@ using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
+using System.ComponentModel.Design;
 
 namespace Music_combiner
 {
-    
-    public class Settings
-    {
-        /*private string[] fileExtentions = { ".mp3", ".wav" };
-        public string[] FileExtensions
-        {
-            get { return fileExtentions; }   // get method
-            set { fileExtentions = value; }  // set method
-        }  TODO: eventually set it up so that this top bit is the settings*/
-    }
-
-
 
     public class FilePulling //class for pulling all the names and files and putting them into a list
     {
@@ -87,31 +77,56 @@ namespace Music_combiner
         
         static string UserInput()
         {
-            //string sDir = (System.Environment.CurrentDirectory);
-            string sDir = "balls";
+            //string userDir = (System.Environment.CurrentDirectory);
+            string userDir = "";
+            bool confirm = false;
+            
 
             try
             {
                 do
                 {
-                    Console.WriteLine("Input a valid filepath");
-                    
-                    sDir = Console.ReadLine();
-                    //TODO: check if a valid filepath
 
-                    Console.WriteLine(sDir);
+                    Console.WriteLine("Input a valid directory: ");
+                    userDir = Console.ReadLine();
+                    if (Directory.Exists(userDir) == true)
+                    {
+                        Console.WriteLine("Confirm this directory to use (y/n): '" + userDir + "'");
+                        string selection = Console.ReadLine();
+
+                        switch (selection)
+                        {
+                            case "y":
+                                confirm = true;
+                                break;
+                            case "n":
+                                confirm = false;
+                                break;
+                            case "Y":
+                                confirm = true;
+                                break;
+                            case "N":
+                                confirm = false;
+                                break;
+                            default:
+                                confirm = false; 
+                                break;
+                        }
+                    }
+
+
+
                 }
-                while (string.IsNullOrWhiteSpace(sDir) == true);
-                
+                while (confirm == false);
 
             }
             catch (System.Exception except)
             {
-                Console.WriteLine(except.Message);
+                Console.WriteLine("An error occurred: " + except.Message);
                 Environment.Exit(0);
 
             }
-         return sDir;
+         return userDir;
         }
         
         public static void Main(string[] args)
@@ -128,8 +143,8 @@ namespace Music_combiner
 
 /*  while (true)
 {
-    string sDir = Console.ReadLine();
-    if (string.IsNullOrWhiteSpace(sDir))
+    string userDir = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(userDir))
     {
         Console.WriteLine("Must be a valid filepath");
 
