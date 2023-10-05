@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace Music_combiner
 {
@@ -22,61 +24,115 @@ namespace Music_combiner
     }
 
 
-    public class FilePulling 
+
+    public class FilePulling //class for pulling all the names and files and putting them into a list
     {
-        static void listFiles(string sDir)
+        static Tuple<List<string>, List<string>> ListFiles(string userInput) //returns 2 lists, 1 for music and 1 for non music items in a folder
         {
-            string[] fileExtentions = { ".mp3", ".wav" }; 
-            List<string> musicFiles;
-            musicFiles = new List<string>();
-            List<string> nonMusicFiles;
-            nonMusicFiles = new List<string>();
+            string[] fileExtentions = { ".mp3", ".wav" };
+            List<string> musicFiles = new List<string>();
+            List<string> nonMusicFiles = new List<string>();
 
             try
             {
                 int folderNum = 0;
                 int fileNum = 0;
-                foreach (string folder in Directory.GetDirectories(sDir))
+                foreach (string folder in Directory.GetDirectories(userInput)) // for each folder in the specified folder
                 {
 
-                    Console.WriteLine("Scanning: " + sDir + ". Folder number: " + folderNum);
-                    foreach (string file in Directory.GetFiles(folder))
+                    Console.WriteLine("Scanning: " + userInput + ". Folder number: " + folderNum);
+                    foreach (string file in Directory.GetFiles(folder)) // for each file in the folder
                     {
                         //Console.WriteLine(file);
+                        // if folders scan folders and the host folder
+                        // if no folders scan host folder
                         Console.WriteLine("Scanning: " + fileNum);
-                        if (fileExtentions.Contains(Path.GetExtension(file)))
+                        if (fileExtentions.Contains(Path.GetExtension(file))) // if the file contains the mentioned file extentions
                         {
                             Console.WriteLine(fileNum + " is music");
-                            musicFiles.Add(file);
+                            musicFiles.Add(file); 
+                            fileNum++;
+                            
+
                         } 
                         else
                         {
                             Console.WriteLine(fileNum + " is not music");
                             nonMusicFiles.Add(file);
+                            fileNum++;
+                            
                         }
-                        fileNum++;
                     }
                     folderNum++;
                     Console.WriteLine("[{0}]", string.Join(", ", musicFiles));
                     Console.WriteLine("");
                     Console.WriteLine("[{0}]", string.Join(", ", nonMusicFiles));
-                    listFiles(folder);
+                    ListFiles(folder);
+                    
+
+
                 }
+
             }
             catch (System.Exception except)
             {
                 Console.WriteLine(except.Message);
-            }
-            Console.Write("\n");
+                
 
+            }
+
+            return Tuple.Create(nonMusicFiles, musicFiles);
         }
 
-        static void Main(string[] args)
+        
+        static string UserInput()
         {
-            string sDir = (System.Environment.CurrentDirectory);
-            listFiles(sDir);
+            //string sDir = (System.Environment.CurrentDirectory);
+            string sDir = "balls";
+
+            try
+            {
+                do
+                {
+                    Console.WriteLine("Input a valid filepath");
+                    
+                    sDir = Console.ReadLine();
+                    //TODO: check if a valid filepath
+
+                    Console.WriteLine(sDir);
+                }
+                while (string.IsNullOrWhiteSpace(sDir) == true);
+                
+
+            }
+            catch (System.Exception except)
+            {
+                Console.WriteLine(except.Message);
+                Environment.Exit(0);
+
+            }
+         return sDir;
+        }
+        
+        public static void Main(string[] args)
+        {
+            string userInput = UserInput();
+            Tuple<List<string>, List<string>> output = ListFiles(userInput);
+
+
         }
 
 
     }
 }
+
+/*  while (true)
+{
+    string sDir = Console.ReadLine();
+    if (string.IsNullOrWhiteSpace(sDir))
+    {
+        Console.WriteLine("Must be a valid filepath");
+
+    }
+}
+*/
