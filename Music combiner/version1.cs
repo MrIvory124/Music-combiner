@@ -17,7 +17,7 @@ namespace Music_combiner
 
     public class FilePulling //class for pulling all the names and files and putting them into a list
     {
-        static Tuple<List<string>, List<string>> ListFiles(string userInput) //returns 2 lists, 1 for music and 1 for non music items in a folder
+        static Tuple<List<string>, List<string>> ListFiles(string userDir, bool scanSubFolders) //returns 2 lists, 1 for music and 1 for non music items in a folder
         {
             string[] fileExtentions = { ".mp3", ".wav" };
             List<string> musicFiles = new List<string>();
@@ -27,10 +27,10 @@ namespace Music_combiner
             {
                 int folderNum = 0;
                 int fileNum = 0;
-                foreach (string folder in Directory.GetDirectories(userInput)) // for each folder in the specified folder
+                foreach (string folder in Directory.GetDirectories(userDir)) // for each folder in the specified folder
                 {
 
-                    Console.WriteLine("Scanning: " + userInput + ". Folder number: " + folderNum);
+                    Console.WriteLine("Scanning: " + userDir + ". Folder number: " + folderNum);
                     foreach (string file in Directory.GetFiles(folder)) // for each file in the folder
                     {
                         //Console.WriteLine(file);
@@ -57,7 +57,7 @@ namespace Music_combiner
                     Console.WriteLine("[{0}]", string.Join(", ", musicFiles));
                     Console.WriteLine("");
                     Console.WriteLine("[{0}]", string.Join(", ", nonMusicFiles));
-                    ListFiles(folder);
+                    //ListFiles(folder);
                     
 
 
@@ -75,10 +75,11 @@ namespace Music_combiner
         }
 
         
-        static string UserInput()
+        static Tuple<string, bool> UserInput()
         {
             //string userDir = (System.Environment.CurrentDirectory);
             string userDir = "";
+            bool scanSubFolders = false;
             bool confirm = false;
             
 
@@ -109,7 +110,32 @@ namespace Music_combiner
                                 confirm = false;
                                 break;
                             default:
-                                confirm = false; 
+                                confirm = false;
+                                Console.WriteLine("Something went wrong, please try again.");
+                                break;
+                        }
+                    }
+                    if (confirm == true){
+                        
+                        Console.WriteLine("Scan sub-folders too?");
+                        string Selection = Console.ReadLine();
+
+                        switch (Selection)
+                        {
+                            case "y":
+                                scanSubFolders = true;
+                                break;
+                            case "n":
+                                scanSubFolders = false;
+                                break;
+                            case "Y":
+                                scanSubFolders = true;
+                                break;
+                            case "N":
+                                scanSubFolders = false;
+                                break;
+                            default:
+                                scanSubFolders = false;
                                 break;
                         }
                     }
@@ -126,13 +152,16 @@ namespace Music_combiner
                 Environment.Exit(0);
 
             }
-         return userDir;
+         return Tuple.Create(userDir, scanSubFolders);
         }
         
         public static void Main(string[] args)
         {
-            string userInput = UserInput();
-            Tuple<List<string>, List<string>> output = ListFiles(userInput);
+            //Tuple<string, bool> userInput = UserInput();
+            string userDir;
+            bool scanSubFolders;
+            (userDir, scanSubFolders) = UserInput();
+            Tuple<List<string>, List<string>> output = ListFiles(userDir, scanSubFolders);
 
 
         }
