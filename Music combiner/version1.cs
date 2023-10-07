@@ -3,10 +3,11 @@
 
     public class FilePulling //class for pulling all the names and files and putting them into a list
     {
-        static Tuple<string, bool> UserInput() // grab input from user
+        static Tuple<string?, bool, string> UserInput() // grab input from user
         {
             //variables to use
             string userDir = "";
+            string outputDir = "";
             bool scanSubFolders = false;
             bool confirm = false;
 
@@ -16,7 +17,7 @@
                 do
                 {
 
-                    Console.WriteLine("Input a valid directory: "); // get them to first input a directory
+                    Console.WriteLine("Input a valid input directory: "); // get them to first input a directory
                     userDir = Console.ReadLine();
                     if (Directory.Exists(userDir) == true) // if the directory exists confirm its the correct one
                     {
@@ -45,7 +46,6 @@
                     }
                     if (confirm == true) // if the directory is the correct one, ask to scan sub folders
                     {
-
                         Console.WriteLine("Scan sub-folders too?");
                         string Selection = Console.ReadLine();
 
@@ -68,11 +68,21 @@
                                 break;
                         }
                     }
-
-
+                    if (confirm == true) // if the directory is the correct one, ask for output folder
+                    {
+                        do
+                        {
+                            Console.WriteLine("Select output folder:");
+                            outputDir = Console.ReadLine();
+                            if (outputDir == userDir){
+                                Console.WriteLine("Output directory must be different from input!");
+                            }
+                        }
+                        while (Directory.Exists(outputDir) == true && outputDir == userDir); 
+                    }
 
                 }
-                while (confirm == false); 
+                while (confirm == false);
 
             }
 
@@ -82,13 +92,13 @@
                 Environment.Exit(0);
 
             }
-            return Tuple.Create(userDir, scanSubFolders); // return variables, none of them should be null if error handling worked
+            return Tuple.Create(userDir, scanSubFolders, outputDir); // return variables, none of them should be null if error handling worked
         }
-        static Tuple<List<string>, List<string>> ListFiles(string userDir, bool scanSubFolders) 
+        static Tuple<List<string>, List<string>> ListFiles(string userDir, bool scanSubFolders)
         {
             string[] fileExtentions = { ".mp3", ".wav" }; // file extentions to use later on
             List<string> musicFiles = new();
-            List<string> nonMusicFiles = new(); 
+            List<string> nonMusicFiles = new();
 
             try // scanning for files with mentioned extentions
             {
@@ -157,18 +167,28 @@
             Console.WriteLine("[{0}]", string.Join(",\n", musicFiles)); // write output to console formatted
             Console.WriteLine("");
             Console.WriteLine("Other files found:");
-            Console.WriteLine("[{0}]", string.Join(", ", nonMusicFiles)); // if no non music files, then will appear empty
+            Console.WriteLine("[{0}]", string.Join(", ", nonMusicFiles)); // if no non music files, then will appear empty 
             return Tuple.Create(nonMusicFiles, musicFiles); // pass variables on
         }
 
         public static void Main(string[] args)
         {
-            //Tuple<string, bool> userInput = UserInput();
+            Console.WriteLine("running");
             string userDir;
             bool scanSubFolders;
-            (userDir, scanSubFolders) = UserInput(); 
-            Tuple<List<string>, List<string>> output = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded
+            string outputDir = "";
 
+            var temp = new Music_combiner.Combiner();
+
+            (userDir, scanSubFolders, outputDir) = UserInput();
+
+            (List<string> nonMusicFiles, List<string> musicFiles) = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded
+
+            temp.Splitter(nonMusicFiles, musicFiles, outputDir);
+            // TODO: Mix audio together with crossfade
+            // currently understand how to concatenate them together
+            // going to impliment some hacky ffmpeg thing
+            Console.WriteLine("done");
 
         }
 
