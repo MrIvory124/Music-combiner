@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Music_combiner
+﻿namespace Music_combiner
 {
 
     public class FilePulling //class for pulling all the names and files and putting them into a list
@@ -210,13 +208,13 @@ namespace Music_combiner
                         folderNum++;
                         System.Threading.Thread.Sleep(100);
                     }
-                    
+
                     if (foldersBefore == folderNum)
-                        {
-                            Console.ForegroundColor = ConsoleColor.DarkBlue;
-                            Console.WriteLine("No sub folders to scan!");
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
-                            System.Threading.Thread.Sleep(1000);
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                        Console.WriteLine("No sub folders to scan!");
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        System.Threading.Thread.Sleep(1000);
                     }
                     else if (filesBefore == fileNum)
                     {
@@ -252,6 +250,30 @@ namespace Music_combiner
             return Tuple.Create(nonMusicFiles, musicFiles); // pass variables on
         }
 
+        static List<string> Randomizer(List<string> musicFiles) // method that randomizes the order of the songs that are picked
+        {
+            int iterate = musicFiles.Count;
+            iterate--;
+            var randomNum = new Random();
+            Console.WriteLine(iterate);
+            List<string> songOrder = new();
+            for (int i = 0; i <= iterate; i++)
+            {
+                //Console.WriteLine(i);
+                int musicFileNum = randomNum.Next(musicFiles.Count);
+                //Console.WriteLine(musicFileNum);
+                //Console.WriteLine("Song num: " + musicFileNum + "Song is: " + musicFiles[musicFileNum]);
+                songOrder.Add(musicFiles[musicFileNum]);
+
+                musicFiles.RemoveAt(musicFileNum);
+            }
+            Console.WriteLine("Song order: ");
+            Console.WriteLine("[{0}]", string.Join(",\n", songOrder));
+
+            return songOrder;
+
+        }
+
         public static void Main(string[] args)
         {
             string userDir;
@@ -264,7 +286,9 @@ namespace Music_combiner
 
             (List<string> nonMusicFiles, List<string> musicFiles) = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded
 
-            temp.Splitter(nonMusicFiles, musicFiles, outputDir);
+            List<string> songOrder = Randomizer(musicFiles);
+
+            temp.Splitter(songOrder, outputDir); // calls the method that starts the encoding process
             // TODO: Mix audio together with crossfade
             // currently understand how to concatenate them together
             // going to impliment some hacky ffmpeg thing
