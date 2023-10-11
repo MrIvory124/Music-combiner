@@ -3,7 +3,7 @@
 
     public class FilePulling //class for pulling all the names and files and putting them into a list
     {
-        static Tuple<string?, bool, string> UserInput() // grab input from user
+        static Tuple<string?, bool, string> UserInput() // grab input from user TODO: get user to name final output file name
         {
             //variables to use
             string userDir = "";
@@ -267,14 +267,15 @@
 
                 musicFiles.RemoveAt(musicFileNum);
             }
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("Song order: ");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("[{0}]", string.Join(",\n", songOrder));
-
             return songOrder;
 
         }
 
-        public static void Main(string[] args)
+        public static void Main(string[] args) // how things are run in order
         {
             string userDir;
             bool scanSubFolders;
@@ -282,11 +283,11 @@
 
             var temp = new Music_combiner.Combiner();
 
-            (userDir, scanSubFolders, outputDir) = UserInput();
+            (userDir, scanSubFolders, outputDir) = UserInput(); // run the user input method
 
-            (List<string> nonMusicFiles, List<string> musicFiles) = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded
+            (List<string> nonMusicFiles, List<string> musicFiles) = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded, lists all files
 
-            List<string> songOrder = Randomizer(musicFiles);
+            List<string> songOrder = Randomizer(musicFiles); // send the listed songs to the randomizer method
 
             temp.Splitter(songOrder, outputDir); // calls the method that starts the encoding process
             // TODO: Mix audio together with crossfade
