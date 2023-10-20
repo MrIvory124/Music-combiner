@@ -1,5 +1,16 @@
 ﻿using System.Diagnostics;
 
+
+/* note for next push of something i find interesting:
+ so something I had not considered while going down this route is the fact that
+I am going to reach the character limit of cmd. This is because i think ive found a way
+to also normalise the songs before combining them.
+Going to have to find a way around this 
+
+update: this equation is exponential with short filepath names, eg: song1.mp3 and can roughly hit the limit around 30 songs deep
+this program grabs the FULL PATH, so it would probably hit the 8k character limit in a matter of seconds, I either have to find a different
+way to interface with ffmpeg or scrap this idea
+ */
 namespace Music_combiner
 {
     public class Combiner
