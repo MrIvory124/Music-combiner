@@ -1,9 +1,31 @@
 ﻿namespace Music_combiner
 {
 
-    public class FilePulling //class for pulling all the names and files and putting them into a list
+    public class MusicFileProcessor //class for pulling all the names and files and putting them into a list
     {
-        static Tuple<string?, bool, string> UserInput() // grab input from user TODO: get user to name final output file name
+        public static void Main(string[] args) // how things are run in order
+        {
+            string userDir;
+            bool scanSubFolders;
+            string outputDir = "";
+
+
+            (userDir, scanSubFolders, outputDir) = GetUserInput(); // run the user input method
+
+            (List<string> nonMusicFiles, List<string> musicFiles) = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded, lists all files
+
+            List<string> songOrder = Randomizer(musicFiles); // send the listed songs to the randomizer method
+
+            var encoder = new Music_combiner.Combiner();
+
+            encoder.SongEncoding(songOrder, outputDir); // calls the method that starts the encoding process
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("Done");
+            Console.ForegroundColor = ConsoleColor.White;
+
+        }
+
+        static Tuple<string?, bool, string> GetUserInput() // grab input from user TODO: get user to name final output file name
         {
             //variables to use
             string userDir = "";
@@ -185,7 +207,7 @@
                         foreach (string file in Directory.GetFiles(folder)) // for each file in the folder
                         {
                             Random rnd = new Random();
-                            int random = rnd.Next(50, 500);
+                            int random = rnd.Next(10, 50);
                             Console.WriteLine("Scanning: " + fileNum);
                             if (fileExtentions.Contains(Path.GetExtension(file))) // if the file contains the mentioned file extentions
                             {
@@ -235,18 +257,16 @@
             }
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("Songs that will be used:");
-            System.Threading.Thread.Sleep(1000);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("[{0}]", string.Join(",\n", musicFiles)); // write output to console formatted
-            System.Threading.Thread.Sleep(1000);
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("Other files found:");
-            System.Threading.Thread.Sleep(1000);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("[{0}]", string.Join(",\n", nonMusicFiles)); // if no non music files, then will appear empty
             Console.WriteLine("");
-            System.Threading.Thread.Sleep(2000); //change this to give user more time to read songs
+
+            System.Threading.Thread.Sleep(5000); //give user time to read songs in list (is useless if long list)
             return Tuple.Create(nonMusicFiles, musicFiles); // pass variables on
         }
 
@@ -259,10 +279,7 @@
             List<string> songOrder = new();
             for (int i = 0; i <= iterate; i++)
             {
-                //Console.WriteLine(i);
                 int musicFileNum = randomNum.Next(musicFiles.Count);
-                //Console.WriteLine(musicFileNum);
-                //Console.WriteLine("Song num: " + musicFileNum + "Song is: " + musicFiles[musicFileNum]);
                 songOrder.Add(musicFiles[musicFileNum]);
 
                 musicFiles.RemoveAt(musicFileNum);
@@ -275,44 +292,5 @@
 
         }
 
-        public static void Main(string[] args) // how things are run in order
-        {
-            string userDir;
-            bool scanSubFolders;
-            string outputDir = "";
-
-            var temp = new Music_combiner.Combiner();
-
-            (userDir, scanSubFolders, outputDir) = UserInput(); // run the user input method
-
-            (List<string> nonMusicFiles, List<string> musicFiles) = ListFiles(userDir, scanSubFolders); //TODO: make it so that files can be excluded, lists all files
-
-            List<string> songOrder = Randomizer(musicFiles); // send the listed songs to the randomizer method
-
-            temp.Splitter(songOrder, outputDir); // calls the method that starts the encoding process
-            // TODO: Mix audio together with crossfade
-            // currently understand how to concatenate them together
-            // going to impliment some hacky ffmpeg thing
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("Done");
-            Console.ForegroundColor = ConsoleColor.White;
-
-        }
-
-
     }
 }
-
-
-
-
-/*  while (true)
-{
-    string userDir = Console.ReadLine();
-    if (string.IsNullOrWhiteSpace(userDir))
-    {
-        Console.WriteLine("Must be a valid filepath");
-
-    }
-}
-*/
