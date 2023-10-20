@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Music_combiner
 {
@@ -56,7 +59,7 @@ namespace Music_combiner
             }
 
 
-            return "yes";
+            return "this doesnt work if nothing is here and i cbf fixing it";
         }
         public string Ffmpeg(string inputFile1, string inputFile2, string outputFile) // method for running ffmpeg with crossfade filter TODO: replace this as its O^n
         {

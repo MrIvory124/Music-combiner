@@ -25,7 +25,7 @@
 
         }
 
-        static Tuple<string?, bool, string> GetUserInput() // grab input from user TODO: get user to name final output file name
+        static Tuple<string?, bool, string> GetUserInput() // grab input from user TODO: get user to name final output file name, split into seperate methods for readability
         {
             //variables to use
             string userDir = "";
