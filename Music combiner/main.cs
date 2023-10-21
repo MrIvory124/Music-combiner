@@ -175,7 +175,6 @@
                         Console.WriteLine(fileNum + " is music");
                         musicFiles.Add(file);
                         fileNum++;
-                        System.Threading.Thread.Sleep(random);
 
 
                     }
@@ -184,12 +183,10 @@
                         Console.WriteLine(fileNum + " is not music");
                         nonMusicFiles.Add(file);
                         fileNum++;
-                        System.Threading.Thread.Sleep(random);
 
                     }
                 }
                 folderNum++;
-                System.Threading.Thread.Sleep(100);
 
 
                 if (scanSubFolders == true) // if user wants sub folders to be scanned do this as well
@@ -198,7 +195,6 @@
                     int foldersBefore = folderNum;
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine("Scanning sub folders");
-                    System.Threading.Thread.Sleep(2000);
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     foreach (string folder in Directory.GetDirectories(userDir)) // for each folder in the specified folder
                     {
@@ -214,7 +210,6 @@
                                 Console.WriteLine(fileNum + " is music");
                                 musicFiles.Add(file);
                                 fileNum++;
-                                System.Threading.Thread.Sleep(random);
 
 
                             }
@@ -223,12 +218,10 @@
                                 Console.WriteLine(fileNum + " is not music");
                                 nonMusicFiles.Add(file);
                                 fileNum++;
-                                System.Threading.Thread.Sleep(random);
 
                             }
                         }
                         folderNum++;
-                        System.Threading.Thread.Sleep(100);
                     }
 
                     if (foldersBefore == folderNum)
@@ -236,14 +229,12 @@
                         Console.ForegroundColor = ConsoleColor.DarkBlue;
                         Console.WriteLine("No sub folders to scan!");
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        System.Threading.Thread.Sleep(1000);
                     }
                     else if (filesBefore == fileNum)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkBlue;
                         Console.WriteLine("No files found in sub folders!");
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        System.Threading.Thread.Sleep(1000);
                     }
 
                 }
